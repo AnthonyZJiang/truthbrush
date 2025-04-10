@@ -360,6 +360,7 @@ class Api:
         created_after: datetime = None,
         since_id=None,
         pinned=False,
+        user_id: int = None
     ) -> List[dict]:
         """Pull the given user's statuses.
 
@@ -372,7 +373,8 @@ class Api:
         """
 
         params = {}
-        user_id = self.lookup(username)["id"]
+        if not user_id:
+            user_id = self.lookup(username)["id"]
         page_counter = 0
         keep_going = True
         while keep_going:
