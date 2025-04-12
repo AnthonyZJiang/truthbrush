@@ -97,15 +97,18 @@ class Api:
 
     def _get(self, url: str, params: dict = None) -> Any:
         try:
+            # https://truthsocial.com/api/v1/accounts/107780257626128497/statuses?exclude_replies=true&only_replies=false&with_muted=true
+            # https://truthsocial.com/api/v1/accounts/107780257626128497/statuses?exclude_replies=true
+            headers = {"User-Agent": USER_AGENT}
+            if self.auth_id:
+                headers["Authorization"] = "Bearer " + self.auth_id
+                
             resp = self._make_session().get(
                 API_BASE_URL + url,
                 params=params,
                 proxies=proxies,
                 impersonate="chrome123",
-                headers={
-                    "Authorization": "Bearer " + self.auth_id,
-                    "User-Agent": USER_AGENT,
-                },
+                headers=headers,
             )
         except curl_cffi.curl.CurlError as e:
             logger.error(f"Curl error: {e}")
@@ -354,7 +357,7 @@ class Api:
 
     def pull_statuses(
         self,
-        username: str,
+        username: str=None,
         replies=False,
         verbose=False,
         created_after: datetime = None,
